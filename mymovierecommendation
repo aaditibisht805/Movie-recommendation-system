@@ -1,0 +1,25 @@
+# pycharm file for creating a user interface for the project 
+import streamlit as st
+import pickle
+import pandas as pd
+def recommend(movie):
+     m_index = movies[movies['title']==movie].index[0]
+     dist= similarity[m_index]
+     m_list=sorted(list(enumerate(dist)),reverse=True,key= lambda x: x[1])[1:11]
+     l=[]
+     for i in m_list:
+         m_id=i[0]
+         #fectch poster from api
+          l.append(movies.iloc[i[0]].title)
+     return l;
+
+movies_dict= pickle.load(open('movie_dict.pkl','rb'))
+movies=pd.DataFrame(movies_dict)
+similarity= pickle.load(open('similarity.pkl','rb'))
+st.title('Movie Recommendation System')
+option= st.selectbox('Select the movie you are interested in',movies['title'].values)
+st.markdown("top 10 similar movies")
+if st.button('Recommend') :
+    r=recommend(option)
+    for i in r:
+        st.write(i)
